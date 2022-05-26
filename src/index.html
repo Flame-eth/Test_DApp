@@ -1,0 +1,62 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="main.css" />
+    <script src="../node_modules/web3/dist/web3.min.js"></script>
+    <script>
+      src = "../build/contracts/TestdApp.json";
+    </script>
+    <title>Test dApp</title>
+  </head>
+  <body>
+    <banner class="banner">
+      <div>
+        <h1 id="h1">Test dApp</h1>
+      </div>
+      <div>
+        <h1>Why dApp?</h1>
+      </div>
+    </banner>
+    <section class="section">
+      <div>
+        <!-- <button class="button" onclick="ConnectWallet">
+          Connect ETH Wallet
+        </button> -->
+        <a href="" class="button" onclick="test()"> Connect MetaMask</a>
+
+        <a href="" id="name" onclick="SetName()">dApp name:</a>
+        <h1 id="class">dApp class:</h1>
+      </div>
+    </section>
+
+    <script>
+      let ethAccount;
+      async function test() {
+        if (typeof window.ethereum) {
+          try {
+            const web3 = new Web3(window.ethereum);
+            await window.ethereum.enable();
+            window.ethereum
+              .request({ method: "eth_requestAccounts" })
+              .then((accounts) => {
+                ethAccount = accounts[0];
+              });
+          } catch (error) {
+            error;
+          }
+        } else {
+          alert("Kindly install MetaMask");
+        }
+
+        window.contract = new web3.eth.Contract();
+
+      }
+
+      const SetName = async () => {
+        window.contract.methods.setName("MY dApp").send();
+      };
+    </script>
+  </body>
+</html>
