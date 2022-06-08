@@ -24,24 +24,35 @@
         <!-- <button class="button" onclick="ConnectWallet">
           Connect ETH Wallet
         </button> -->
-        <a href="" class="button" onclick="test()"> Connect MetaMask</a>
+        <a class="button" onclick="test()"> Connect MetaMask</a>
+        <a class="button" id="name" onclick="GetName()">dApp name:</a>
+        <a class="button" id="class" onclick="SetClass()">dApp class:</a>
 
-        <a href="" id="name" onclick="SetName()">dApp name:</a>
-        <h1 id="class">dApp class:</h1>
+        <input
+          type="text"
+          name="Set Class"
+          id="set_app_class"
+          class="display: block"
+        />
       </div>
     </section>
 
     <script>
+      let cla;
       let ethAccount;
+      let web3;
+
       async function test() {
         if (typeof window.ethereum) {
           try {
-            const web3 = new Web3(window.ethereum);
+            web3 = new Web3(window.ethereum);
+            web3.eth.setProvider("HTTP://127.0.0.1:7545");
             await window.ethereum.enable();
             window.ethereum
               .request({ method: "eth_requestAccounts" })
               .then((accounts) => {
                 ethAccount = accounts[0];
+                console.log("ethAccount: " + ethAccount);
               });
           } catch (error) {
             error;
@@ -49,13 +60,98 @@
         } else {
           alert("Kindly install MetaMask");
         }
-
-        window.contract = new web3.eth.Contract();
-
       }
 
-      const SetName = async () => {
-        window.contract.methods.setName("MY dApp").send();
+      const SetClass = () => {
+        document.getElementById("set_app_class").value = cla;
+        // window.contract.methods.setClass(cla).send();
+        console.log(cla);
+      };
+
+      const GetName = async () => {
+        abi = [
+          {
+            inputs: [],
+            name: "appClass",
+            outputs: [
+              {
+                internalType: "string",
+                name: "",
+                type: "string",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+            constant: true,
+          },
+          {
+            inputs: [],
+            name: "appName",
+            outputs: [
+              {
+                internalType: "string",
+                name: "",
+                type: "string",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+            constant: true,
+          },
+          {
+            inputs: [
+              {
+                internalType: "string",
+                name: "_appClass",
+                type: "string",
+              },
+            ],
+            name: "setClass",
+            outputs: [],
+            stateMutability: "view",
+            type: "function",
+            constant: true,
+          },
+          {
+            inputs: [],
+            name: "getName",
+            outputs: [
+              {
+                internalType: "string",
+                name: "",
+                type: "string",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+            constant: true,
+          },
+          {
+            inputs: [],
+            name: "getClass",
+            outputs: [
+              {
+                internalType: "string",
+                name: "",
+                type: "string",
+              },
+            ],
+            stateMutability: "view",
+            type: "function",
+            constant: true,
+          },
+        ];
+        contract_address = "0xa6e38f74Ac157499A73a2277c210AD8910c57F8D";
+        console.log(contract_address);
+        web3.eth.setProvider("HTTP://127.0.0.1:7545");
+        const contractInstance = await new web3.eth.Contract(
+          abi,
+          contract_address
+        );
+        const getname = await window.contractInstance.methods
+          .getName()
+          .call({ from: ethAccount })
+          .then(console.log(appName));
       };
     </script>
   </body>
